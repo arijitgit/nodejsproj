@@ -1,12 +1,18 @@
 var express = require('express');
 var http = require("http");
 var https = require("https");
+
 var app = express();
 var fs = require("fs");
 var mysql = require('mysql');
+var call = require('./util/call');  
 
 var mainUtil = require('./util/mainUtil');
-mainUtil.isGreaterThanTen(12);
+//mainUtil.isGreaterThanTen(12);
+
+
+//call.getCall();
+//call.postCall();
 //================================ http://127.0.0.1:8088/verifyNumber?x=123 ====================================
 
 app.get('/verifyNumber' ,function(req,res) {
@@ -16,6 +22,15 @@ app.get('/verifyNumber' ,function(req,res) {
 		console.log('Result  ==> '+result);
 		res.send('Result  -> '+result);
 })
+
+
+app.get('/getItems' ,function(req,res) {
+		console.log("getItems called ");
+		var data = call.getCall();
+		res.send('Result  -> '+data);
+})
+
+
 /*
 Rest service to fetch DB result  
 http://127.0.0.1:8088/verifyNumber?x=123
@@ -92,12 +107,38 @@ app.get('/:id', function (req, res) {
    });
 })
 
+
+
+app.get('/postMsgToQueue', function (req, res) {
+	var request = require('request');
+   request('http://localhost:8080/RestService/rest/message/postMsgToQueue', function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+        console.log(body) // Print the google web page.
+		console.log('Message ' + JSON.stringify(body));
+     }
+    })
+})
+
+app.get('/consumeMsgFromQueue', function (req, res) {
+	var request = require('request');
+   request('http://localhost:8080/RestService/rest/message/consumeMsgFromQueue', function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+        console.log(body) // Print the google web page.
+		console.log('Message ' + JSON.stringify(body));
+     }
+    })
+})
+
+
 //=======================================================================================================//
-var server = app.listen(8088,"127.0.0.1", function () {
+var server = app.listen(8088,"127.0.0.2", function () {
 
   var host = server.address().address
   var port = server.address().port
 
+
+  let abcd = "   This is let";
   console.log("Example app listening at http://%s:%s", host, port)
+  //console.log("ABCD a "+abcd);
 
 })
